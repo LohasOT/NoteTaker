@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const path = require('path')
 const fs = require('fs')
+const { v4: uuidv4 } = require('uuid');
 
 router.get('/api/notes', (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'db', 'db.json'), 'utf8', (err, data) => {
@@ -10,6 +11,7 @@ router.get('/api/notes', (req, res) => {
 })
 router.post('/api/notes', (req, res) => {
   const note = req.body
+  note.id = uuidv4();
   fs.readFile(path.join(__dirname, '..', 'db', 'db.json'), 'utf8', (err, data) => {
     if (err) { console.log(err) }
     const notes = JSON.parse(data)
@@ -25,11 +27,14 @@ router.delete('/api/notes/:id', (req, res) => {
     const notes = JSON.parse(data)
     for (let i = 0; i < notes.length; i++) {
       const dbElement = notes[i];
-      if 
+      if (dbElement.id === req.params.id) {
+        notes.splice(i, 1)
+      }
     }
-    
-    if (err) { console.log(err) }
-    res.sendStatus(200)
+    fs.writeFile(path.join(__dirname, '..', 'db', 'db.json'), JSON.stringify(notes), err => {
+      if (err) { console.log(err) }
+      res.sendStatus(200)
+    })
   })
 })
 
