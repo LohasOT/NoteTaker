@@ -21,9 +21,13 @@ router.post('/api/notes', (req, res) => {
   })
 })
 router.delete('/api/notes/:id', (req, res) => {
-  const note = req.body
-  console.log(req.body)
-  fs.writeFile(path.join(__dirname, '..', 'db', 'db.json'), JSON.stringify(notes), err => {
+  fs.readFile(path.join(__dirname, '..', 'db', 'db.json'), 'utf8', (err, data) => {
+    const notes = JSON.parse(data)
+    for (let i = 0; i < notes.length; i++) {
+      const dbElement = notes[i];
+      if 
+    }
+    
     if (err) { console.log(err) }
     res.sendStatus(200)
   })
